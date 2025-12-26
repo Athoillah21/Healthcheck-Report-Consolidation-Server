@@ -8,9 +8,12 @@ A comprehensive Bash script that performs automated health checks on PostgreSQL 
 
 ```
 Healthcheck-Report-Consolidation-Server/
+├── deploy.bat      # Windows batch script for GitHub deployment
 ├── hc-report.sh    # Main healthcheck script
 ├── list_db         # Database instances configuration file
-└── README.md       # This documentation
+├── README.md       # This documentation
+└── result/
+    └── daily_health_check_report_sample.html  # Sample output report
 ```
 
 ---
@@ -54,7 +57,7 @@ flowchart TD
 
 | Variable | Description | Default Value |
 |----------|-------------|---------------|
-| `LIST_DB_FILE` | Path to database list file | `/home/postgres/script/.../list_db_test_mp_2` |
+| `LIST_DB_FILE` | Path to database list file | `/home/postgres/script/.../list_db` |
 | `DB_USER` | PostgreSQL user for target DBs | `pemuser` |
 | `DB_PASSWORD` | Database password | `pemuser` |
 | `PEM_HOST` | PEM database host | `localhost` |
@@ -130,9 +133,10 @@ db-server-02,10.0.0.2,5432,replica_db,Replica DB,/data
 ## 📊 Output
 
 ### HTML Report
-- Generated at: `/home/postgres/script/.../report/daily_health_check_report_YYYY-MM-DD HH:MM:SS.html`
+- Generated at: `result/daily_health_check_report_YYYY-MM-DD_HH:MM:SS.html`
 - Contains a styled table with all health metrics
 - Color-coded status indicators
+- See sample report in `result/` folder
 
 ### Email Notification
 - Sends HTML report as attachment via `mailx`
@@ -153,6 +157,8 @@ db-server-02,10.0.0.2,5432,replica_db,Replica DB,/data
 
 ## 🚀 Usage
 
+### Running the Healthcheck Script (Linux)
+
 ```bash
 # Make the script executable
 chmod +x hc-report.sh
@@ -160,6 +166,19 @@ chmod +x hc-report.sh
 # Run the healthcheck
 ./hc-report.sh
 ```
+
+### Deploying to GitHub (Windows)
+
+```cmd
+# Simply double-click deploy.bat or run:
+deploy.bat
+```
+
+The deploy script will:
+1. Initialize Git repository (if needed)
+2. Create `.gitignore` for sensitive files
+3. Prompt for commit message
+4. Push to GitHub repository
 
 ### Prerequisites
 - `.pgpass` file configured for password-less authentication
@@ -193,6 +212,18 @@ SUBJECT="[Daily Report] PostgreSQL Database Healthcheck Report"
 
 ---
 
+## 📂 Sample Report
+
+A sample HTML report is included in the `result/` folder demonstrating the output format with masked data for security purposes.
+
+---
+
 ## 📄 License
 
 Internal tool for PostgreSQL database monitoring - Telkomsigma
+
+---
+
+## 🔗 Repository
+
+**GitHub**: [https://github.com/Athoillah21/Healthcheck-Report-Consolidation-Server](https://github.com/Athoillah21/Healthcheck-Report-Consolidation-Server)
