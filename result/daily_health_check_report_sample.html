@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>[Daily Report] PostgreSQL Database Healthcheck Report - 2025-12-25</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; color: #333; padding: 20px; }
+        h1, h2 { color: #007bff; border-bottom: 2px solid #eee; padding-bottom: 5px; }
+        .generated-info { text-align: center; color: #666; margin-bottom: 30px; font-style: italic; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; background-color: #ffffff; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); }
+        th, td { border: 1px solid #ddd; text-align: center; padding: 12px; }
+        th { background-color: #007bff; color: white; font-weight: bold; }
+        td { font-weight: 500; }
+
+        /* Status Indicators - Converted to inline-block for pill-style appearance */
+        .status-ok { background-color: #d4edda; color: #155724; font-weight: bold; display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 0.85em; }
+        .status-warn { background-color: #fff3cd; color: #856404; font-weight: bold; display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 0.85em; }
+        .status-alert { background-color: #f8d7da; color: #721c24; font-weight: bold; display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 0.85em; }
+        .status-na { background-color: #e9ecef; color: #495057; display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 0.85em; }
+        .status-safe { background-color: #d4edda; color: #155724; font-weight: bold; display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 0.85em; }
+
+        /* Replication Status */
+        .repl-primary { background-color: #00509e; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.85em; display: inline-block; }
+        .repl-replica { background-color: #28a745; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.85em; display: inline-block; }
+        .repl-unsync { background-color: #dc3545; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.85em; display: inline-block; }
+    </style>
+</head>
+<body>
+    <h1>[Daily Report] PostgreSQL Database Healthcheck Report</h1>
+    <div class="generated-info">Generated on: 2025-12-25 07:00:01 WIB</div>
+
+    <h2>Instance Health Summary</h2>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Hostname</th>
+            <th>Port</th>
+            <th>Master Status</th> <th>Replication Status</th>
+            <th>Connection Usage (%)</th>
+            <th>Dead Tuples</th>
+            <th>XID Age</th>
+            <th>Blocking Queries</th>
+            <th>Mountpoint Usage</th>
+        </tr>
+<tr>
+        <td>DB_APP_001</td>
+        <td>db-server-01</td>
+        <td>9922</td>
+        <td>Master</td> <td><div class='repl-primary'>SYNC</div> </td>
+        <td><div class='status-ok'>1211/2000 (61%)</div></td>
+        <td><div class='status-ok'>194699<br/><small>(app_schema.table_xxx)</small></div></td>
+        <td><div class='status-ok'>165.9M</div></td>
+        <td><div class='status-ok'>0</div></td>
+        <td><div class='status-safe'>/data/APP_001<br/><small>(10.17%)</small></div></td>
+      </tr>
+<tr>
+        <td>DB_APP_002</td>
+        <td>db-server-01</td>
+        <td>9943</td>
+        <td>Master</td> <td><div class='repl-primary'>SYNC</div> </td>
+        <td><div class='status-ok'>79/2000 (4%)</div></td>
+        <td><div class='status-ok'>0</div></td>
+        <td><div class='status-ok'>783008</div></td>
+        <td><div class='status-ok'>0</div></td>
+        <td><div class='status-safe'>/data/APP_002<br/><small>(44.88%)</small></div></td>
+      </tr>
+<tr>
+        <td>DB_APP_003</td>
+        <td>db-server-01</td>
+        <td>9953</td>
+        <td>Master</td> <td><div class='repl-primary'>SYNC</div> </td>
+        <td><div class='status-ok'>66/2000 (3%)</div></td>
+        <td><div class='status-ok'>24446<br/><small>(scm_schema.commands_xxx)</small></div></td>
+        <td><div class='status-ok'>88.2M</div></td>
+        <td><div class='status-ok'>0</div></td>
+        <td><div class='status-safe'>/data/APP_003<br/><small>(10.37%)</small></div></td>
+      </tr>
+<tr>
+        <td>DB_APP_004</td>
+        <td>db-server-01</td>
+        <td>9967</td>
+        <td>Master</td> <td><div class='repl-unsync'>UNSYNC</div> <br/>(No Replicas)</td>
+        <td><div class='status-ok'>8/2000 (0%)</div></td>
+        <td><div class='status-ok'>27<br/><small>(app_schema.user_xxx)</small></div></td>
+        <td><div class='status-ok'>195.1M</div></td>
+        <td><div class='status-ok'>0</div></td>
+        <td><div class='status-safe'>/data/APP_004<br/><small>(38.03%)</small></div></td>
+      </tr>
+<tr>
+        <td>DB_APP_005</td>
+        <td>db-server-01</td>
+        <td>9938</td>
+        <td>Master</td> <td><div class='repl-unsync'>UNSYNC</div> <br/>(No Replicas)</td>
+        <td><div class='status-ok'>26/2000 (1%)</div></td>
+        <td><div class='status-ok'>105350<br/><small>(app_schema.results_xxx)</small></div></td>
+        <td><div class='status-ok'>199.1M</div></td>
+        <td><div class='status-ok'>0</div></td>
+        <td><div class='status-safe'>/data/APP_005<br/><small>(39.39%)</small></div></td>
+      </tr>
+<tr>
+        <td>DB_APP_006</td>
+        <td>db-server-02</td>
+        <td>9921</td>
+        <td>Slave</td> <td><div class='repl-replica'>SYNC</div> <br/>(Replica)</td>
+        <td><div class='status-ok'>510/10000 (5%)</div></td>
+        <td><div class='status-ok'>0</div></td>
+        <td><div class='status-ok'>199.8M</div></td>
+        <td><div class='status-ok'>0</div></td>
+        <td><div class='status-alert'>/data/APP_006<br/><small>(82.51%)</small></div></td>
+      </tr>
+<tr>
+        <td>DB_APP_007</td>
+        <td>db-server-02</td>
+        <td>9991</td>
+        <td>Master</td> <td><div class='repl-primary'>SYNC</div> </td>
+        <td><div class='status-ok'>19/2000 (1%)</div></td>
+        <td><div class='status-alert'>3.1M<br/><small>(app_schema.invoice_xxx)</small></div></td>
+        <td><div class='status-ok'>194.3M</div></td>
+        <td><div class='status-ok'>0</div></td>
+        <td><div class='status-safe'>/data/APP_007<br/><small>(62.99%)</small></div></td>
+      </tr>
+<tr>
+        <td>DB_APP_008</td>
+        <td>db-server-02</td>
+        <td>9958</td>
+        <td>Slave</td> <td><div class='repl-replica'>SYNC</div> <br/>(Replica)</td>
+        <td><div class='status-ok'>13/2000 (1%)</div></td>
+        <td><div class='status-ok'>0</div></td>
+        <td><div class='status-ok'>191.3M</div></td>
+        <td><div class='status-ok'>0</div></td>
+        <td><div class='status-safe'>/data/APP_008<br/><small>(40.66%)</small></div></td>
+      </tr>
+<tr>
+        <td>DB_APP_009</td>
+        <td>db-server-03</td>
+        <td>5981</td>
+        <td>Master</td> <td><div class='repl-primary'>SYNC</div> </td>
+        <td><div class='status-ok'>363/1200 (30%)</div></td>
+        <td><div class='status-ok'>179197<br/><small>(app_schema.temp_xxx)</small></div></td>
+        <td><div class='status-ok'>151.1M</div></td>
+        <td><div class='status-ok'>0</div></td>
+        <td><div class='status-safe'>/data/APP_009<br/><small>(58.93%)</small></div></td>
+      </tr>
+<tr>
+        <td>DB_APP_010</td>
+        <td>db-server-03</td>
+        <td>9929</td>
+        <td>Master</td> <td><div class='repl-unsync'>UNSYNC</div> <br/>(No Replicas)</td>
+        <td><div class='status-ok'>21/2000 (1%)</div></td>
+        <td><div class='status-ok'>110389<br/><small>(app_schema.queue_xxx)</small></div></td>
+        <td><div class='status-ok'>16.1M</div></td>
+        <td><div class='status-ok'>0</div></td>
+        <td><div class='status-safe'>/data/APP_010<br/><small>(2.30%)</small></div></td>
+      </tr>
+<tr>
+        <td>DB_APP_011</td>
+        <td>db-server-03</td>
+        <td>9940</td>
+        <td>Master</td> <td><div class='repl-primary'>SYNC</div> </td>
+        <td><div class='status-warn'>1655/2000 (83%)</div></td>
+        <td><div class='status-alert'>1.5M<br/><small>(inv_schema.data_xxx)</small></div></td>
+        <td><div class='status-ok'>49.1M</div></td>
+        <td><div class='status-ok'>0</div></td>
+        <td><div class='status-safe'>/data/APP_011<br/><small>(40.23%)</small></div></td>
+      </tr>
+<tr>
+        <td>DB_APP_012</td>
+        <td>db-server-03</td>
+        <td>9920</td>
+        <td>Master</td> <td><div class='repl-primary'>SYNC</div> </td>
+        <td><div class='status-ok'>591/3000 (20%)</div></td>
+        <td><div class='status-ok'>182706<br/><small>(app_schema.links_xxx)</small></div></td>
+        <td><div class='status-ok'>199.7M</div></td>
+        <td><div class='status-ok'>0</div></td>
+        <td><div class='status-safe'>/data/APP_012<br/><small>(64.58%)</small></div></td>
+      </tr>
+<tr>
+        <td>DB_APP_013</td>
+        <td>db-server-03</td>
+        <td>9913</td>
+        <td>Master</td> <td><div class='repl-primary'>SYNC</div> </td>
+        <td><div class='status-ok'>417/2000 (21%)</div></td>
+        <td><div class='status-alert'>3.8M<br/><small>(ops_schema.transaction_xxx)</small></div></td>
+        <td><div class='status-ok'>197.2M</div></td>
+        <td><div class='status-ok'>0</div></td>
+        <td><div class='status-alert'>/data/APP_013<br/><small>(80.09%)</small></div></td>
+      </tr>
+<tr>
+        <td>DB_APP_014</td>
+        <td>db-server-04</td>
+        <td>9954</td>
+        <td>Master</td> <td><div class='repl-unsync'>DELAY</div> <br/>(Lag: 25 MB)</td>
+        <td><div class='status-ok'>242/2000 (12%)</div></td>
+        <td><div class='status-ok'>0</div></td>
+        <td><div class='status-ok'>198.4M</div></td>
+        <td><div class='status-ok'>0</div></td>
+        <td><div class='status-safe'>/data/APP_014<br/><small>(68.09%)</small></div></td>
+      </tr>
+<tr>
+        <td>DB_APP_015</td>
+        <td>db-server-04</td>
+        <td>9807</td>
+        <td>Master</td> <td><div class='repl-primary'>SYNC</div> </td>
+        <td><div class='status-ok'>76/5000 (2%)</div></td>
+        <td><div class='status-ok'>10907<br/><small>(prod_schema.data_xxx)</small></div></td>
+        <td><div class='status-ok'>166.9M</div></td>
+        <td><div class='status-ok'>0</div></td>
+        <td><div class='status-safe'>/data/APP_015<br/><small>(38.07%)</small></div></td>
+      </tr>
+<tr>
+        <td>DB_APP_016</td>
+        <td>db-server-05</td>
+        <td>5432</td>
+        <td>Master</td> <td><div class='repl-primary'>SYNC</div> </td>
+        <td><div class='status-ok'>515/10000 (5%)</div></td>
+        <td><div class='status-ok'>167281<br/><small>(apps_schema.notification_xxx)</small></div></td>
+        <td><div class='status-ok'>196.4M</div></td>
+        <td><div class='status-ok'>0</div></td>
+        <td><div class='status-alert'>/data<br/><small>(74.12%)</small></div></td>
+      </tr>
+<tr>
+        <td>DB_APP_017</td>
+        <td>db-server-06</td>
+        <td>9920</td>
+        <td>Master</td> <td><div class='repl-primary'>SYNC</div> </td>
+        <td><div class='status-ok'>11/2000 (1%)</div></td>
+        <td><div class='status-alert'>1.9M<br/><small>(dept_schema.data_xxx)</small></div></td>
+        <td><div class='status-ok'>1.2M</div></td>
+        <td><div class='status-ok'>0</div></td>
+        <td><div class='status-alert'>/data<br/><small>(73.87%)</small></div></td>
+      </tr>
+<tr>
+        <td>DB_APP_018</td>
+        <td>db-server-07.example.com</td>
+        <td>5432</td>
+        <td>Master</td> <td><div class='repl-primary'>SYNC</div> , Backup Running</td>
+        <td><div class='status-warn'>10992/13000 (85%)</div></td>
+        <td><div class='status-warn'>923049<br/><small>(ref_schema.block_xxx)</small></div></td>
+        <td><div class='status-ok'>205.3M</div></td>
+        <td><div class='status-ok'>0</div></td>
+        <td><div class='status-alert'>/data/postgres<br/><small>(82.95%)</small></div></td>
+      </tr>
+<tr>
+        <td>DB_APP_019</td>
+        <td>db-server-08</td>
+        <td>5999</td>
+        <td>Master</td> <td><div class='repl-primary'>SYNC</div> </td>
+        <td><div class='status-ok'>211/2000 (11%)</div></td>
+        <td><div class='status-warn'>942716<br/><small>(bill_schema.cycle_xxx)</small></div></td>
+        <td><div class='status-ok'>197.9M</div></td>
+        <td><div class='status-ok'>0</div></td>
+        <td><div class='status-safe'>/data/APP_019<br/><small>(38.36%)</small></div></td>
+      </tr>
+<tr>
+        <td>DB_APP_020</td>
+        <td>db-server-09</td>
+        <td>9955</td>
+        <td>Master</td> <td><div class='repl-primary'>SYNC</div> </td>
+        <td><div class='status-ok'>45/2000 (2%)</div></td>
+        <td><div class='status-ok'>196728<br/><small>(_timescaledb_internal._hyper_xxx)</small></div></td>
+        <td><div class='status-ok'>199.7M</div></td>
+        <td><div class='status-ok'>0</div></td>
+        <td><div class='status-alert'>/data/APP_020<br/><small>(88.58%)</small></div></td>
+      </tr>
+    </table>
+<footer>
+    <p>Generated by PostgreSQL Healthcheck Report Script - SAMPLE REPORT (DATA MASKED)</p></footer>
+</body>
+</html>

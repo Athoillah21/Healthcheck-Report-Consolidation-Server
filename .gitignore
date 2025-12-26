@@ -1,0 +1,5 @@
+# Ignore original reports with sensitive data
+*.log
+*.tmp
+.env
+.pgpass
