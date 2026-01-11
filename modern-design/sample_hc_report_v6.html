@@ -348,6 +348,11 @@
             font-weight: 600;
             text-transform: uppercase;
             display: inline-block;
+            transition: transform 0.2s;
+        }
+
+        .badge:hover {
+            transform: scale(1.05);
         }
 
         .badge.ok,
@@ -366,6 +371,7 @@
         .badge.unsync {
             background: rgba(248, 81, 73, 0.15);
             color: #f85149;
+            animation: pulse-red 2s infinite;
         }
 
         .badge.primary {
@@ -389,6 +395,11 @@
             font-size: 0.6rem;
             font-weight: 600;
             display: inline-block;
+            transition: transform 0.2s;
+        }
+
+        .role-badge:hover {
+            transform: scale(1.05);
         }
 
         .role-badge.master {
@@ -454,6 +465,20 @@
             inset: 0;
             background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
             animation: shimmer 2s infinite;
+        }
+
+        @keyframes pulse-red {
+            0% {
+                box-shadow: 0 0 0 0 rgba(248, 81, 73, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 4px rgba(248, 81, 73, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(248, 81, 73, 0);
+            }
         }
 
         @keyframes shimmer {
@@ -587,7 +612,13 @@
                                 <div class='value-cell'><span class='badge sync'>SYNC</span><span
                                         class='value-sub'>Streaming OK</span></div>
                             </td>
-                            <td><span class='badge ok'>45/500 (9%)</span></td>
+                            <td>
+                                <div class='value-cell'><span class='value-main'>9% Usage</span><code>(45/500)</code>
+                                </div>
+                                <div class='progress-bar'>
+                                    <div class='progress-fill ok' style='width:9%'></div>
+                                </div>
+                            </td>
                             <td>
                                 <div class='value-cell'><span class='badge ok'>125K</span><span
                                         class='value-sub'>public.orders</span></div>
@@ -611,7 +642,13 @@
                                 <div class='value-cell'><span class='badge sync'>SYNC</span><span
                                         class='value-sub'>Replica OK</span></div>
                             </td>
-                            <td><span class='badge ok'>23/500 (5%)</span></td>
+                            <td>
+                                <div class='value-cell'><span class='value-main'>5% Usage</span><code>(23/500)</code>
+                                </div>
+                                <div class='progress-bar'>
+                                    <div class='progress-fill ok' style='width:5%'></div>
+                                </div>
+                            </td>
                             <td>
                                 <div class='value-cell'><span class='badge ok'>89K</span><span
                                         class='value-sub'>public.transactions</span></div>
@@ -635,7 +672,13 @@
                                 <div class='value-cell'><span class='badge delay'>DELAY</span><span
                                         class='value-sub'>Lag: 15 MB</span></div>
                             </td>
-                            <td><span class='badge warning'>412/500 (82%)</span></td>
+                            <td>
+                                <div class='value-cell'><span class='value-main'>82% Usage</span><code>(412/500)</code>
+                                </div>
+                                <div class='progress-bar'>
+                                    <div class='progress-fill warning' style='width:82%'></div>
+                                </div>
+                            </td>
                             <td>
                                 <div class='value-cell'><span class='badge warning'>450K</span><span
                                         class='value-sub'>analytics.events</span></div>
@@ -643,10 +686,10 @@
                             <td><span class='badge warning'>320.2M</span></td>
                             <td><span class='badge warning'>3</span></td>
                             <td>
-                                <div class='value-cell'><span class='value-main'>78.5%</span><code>/data/pgdata</code>
+                                <div class='value-cell'><span class='value-main'>80.0%</span><code>/data/pgdata</code>
                                 </div>
                                 <div class='progress-bar'>
-                                    <div class='progress-fill critical' style='width:78%'></div>
+                                    <div class='progress-fill warning' style='width:80%'></div>
                                 </div>
                             </td>
                         </tr>
@@ -659,7 +702,13 @@
                                 <div class='value-cell'><span class='badge unsync'>UNSYNC</span><span
                                         class='value-sub'>No Replicas</span></div>
                             </td>
-                            <td><span class='badge critical'>478/500 (96%)</span></td>
+                            <td>
+                                <div class='value-cell'><span class='value-main'>96% Usage</span><code>(478/500)</code>
+                                </div>
+                                <div class='progress-bar'>
+                                    <div class='progress-fill critical' style='width:96%'></div>
+                                </div>
+                            </td>
                             <td>
                                 <div class='value-cell'><span class='badge critical'>2.5M</span><span
                                         class='value-sub'>dwh.fact_sales</span></div>
@@ -667,10 +716,10 @@
                             <td><span class='badge critical'>1.2B</span></td>
                             <td><span class='badge critical'>15</span></td>
                             <td>
-                                <div class='value-cell'><span class='value-main'>92.1%</span><code>/data/pgdata</code>
+                                <div class='value-cell'><span class='value-main'>80.5%</span><code>/data/pgdata</code>
                                 </div>
                                 <div class='progress-bar'>
-                                    <div class='progress-fill critical' style='width:92%'></div>
+                                    <div class='progress-fill critical' style='width:81%'></div>
                                 </div>
                             </td>
                         </tr>
@@ -683,7 +732,13 @@
                                 <div class='value-cell'><span class='badge sync'>SYNC</span><span
                                         class='value-sub'>Streaming OK</span></div>
                             </td>
-                            <td><span class='badge ok'>15/200 (8%)</span></td>
+                            <td>
+                                <div class='value-cell'><span class='value-main'>8% Usage</span><code>(15/200)</code>
+                                </div>
+                                <div class='progress-bar'>
+                                    <div class='progress-fill ok' style='width:8%'></div>
+                                </div>
+                            </td>
                             <td>
                                 <div class='value-cell'><span class='badge ok'>5.2K</span><span
                                         class='value-sub'>public.users</span></div>
@@ -707,7 +762,13 @@
                                 <div class='value-cell'><span class='badge sync'>SYNC</span><span
                                         class='value-sub'>Backup Running</span></div>
                             </td>
-                            <td><span class='badge ok'>8/100 (8%)</span></td>
+                            <td>
+                                <div class='value-cell'><span class='value-main'>8% Usage</span><code>(8/100)</code>
+                                </div>
+                                <div class='progress-bar'>
+                                    <div class='progress-fill ok' style='width:8%'></div>
+                                </div>
+                            </td>
                             <td><span class='badge ok'>0</span></td>
                             <td><span class='badge ok'>25.0M</span></td>
                             <td><span class='badge ok'>0</span></td>

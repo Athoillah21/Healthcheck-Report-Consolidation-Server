@@ -23,7 +23,8 @@ XID_AGE_ALERT_THRESHOLD=1000000000    # XID Age threshold for ALERT (1B)
 CONN_WARN_PERCENT=80                  # Connection usage percentage for WARNING (80%)
 CONN_ALERT_PERCENT=90                 # Connection usage percentage for ALERT (90%)
 
-MOUNTPOINT_ALERT_THRESHOLD=70         # Mountpoint usage percentage for ALERT (70%)
+MOUNTPOINT_WARN_THRESHOLD=70        # Mountpoint usage percentage for WARNING (70%)
+MOUNTPOINT_CRIT_THRESHOLD=80        # Mountpoint usage percentage for CRITICAL (80%)
 
 REPLICATION_LAG_DELAY_BYTES=10485760  # 10MB replication lag for DELAY status
 
@@ -168,14 +169,16 @@ th:nth-child(10) { width: 15%; } /* Mountpoint */
 tr { border-bottom: 1px solid var(--border); transition: background var(--transition); }
 tbody tr:hover { background: var(--bg-alt); }
 td { font-weight: 500; }
-.badge { padding: 3px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: 600; text-transform: uppercase; display: inline-block; }
+.badge { padding: 3px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: 600; text-transform: uppercase; display: inline-block; transition: transform 0.2s; }
+.badge:hover { transform: scale(1.05); }
 .badge.ok, .badge.sync { background: rgba(46, 160, 67, 0.15); color: #2ea043; }
 .badge.warning, .badge.delay { background: rgba(210, 153, 34, 0.15); color: #d29922; }
-.badge.critical, .badge.unsync { background: rgba(248, 81, 73, 0.15); color: #f85149; }
+.badge.critical, .badge.unsync { background: rgba(248, 81, 73, 0.15); color: #f85149; animation: pulse-red 2s infinite; }
 .badge.primary { background: rgba(51, 103, 145, 0.2); color: var(--pg-blue-light); }
 .badge.replica { background: rgba(46, 160, 67, 0.15); color: #2ea043; }
 .badge.na { background: rgba(139, 148, 158, 0.15); color: var(--text-muted); }
-.role-badge { padding: 3px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: 600; display: inline-block; }
+.role-badge { padding: 3px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: 600; display: inline-block; transition: transform 0.2s; }
+.role-badge:hover { transform: scale(1.05); }
 .role-badge.master { background: linear-gradient(135deg, var(--pg-blue), var(--pg-blue-dark)); color: white; }
 .role-badge.slave { background: linear-gradient(135deg, #2ea043, #238636); color: white; }
 .role-badge.unknown { background: rgba(139, 148, 158, 0.3); color: var(--text-muted); }
@@ -186,6 +189,7 @@ code { background: var(--bg-alt); padding: 1px 4px; border-radius: 3px; font-siz
 .progress-bar { width: 50px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; margin: 4px auto 0; }
 .progress-fill { height: 100%; border-radius: 2px; position: relative; }
 .progress-fill::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); animation: shimmer 2s infinite; }
+@keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(248, 81, 73, 0.4); } 70% { box-shadow: 0 0 0 4px rgba(248, 81, 73, 0); } 100% { box-shadow: 0 0 0 0 rgba(248, 81, 73, 0); } }
 @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 .progress-fill.ok { background: linear-gradient(90deg, #238636, #2ea043); }
 .progress-fill.warning { background: linear-gradient(90deg, #9e6a03, #d29922); }
@@ -330,7 +334,11 @@ while IFS=',' read -r HOSTNAME IP PORT DBNAME DISPLAY_NAME MP; do
         else
             CONN_STATUS_CLASS="ok"
         fi
-        CONN_PERCENT="${CURRENT_CONN}/${MAX_CONN} (${CONN_RAW_PERCENT}%)"
+        CONN_DISPLAY="${CURRENT_CONN}/${MAX_CONN}"
+        CONN_PERCENT_VALUE="${CONN_RAW_PERCENT}"
+    else
+        CONN_DISPLAY="N/A"
+        CONN_PERCENT_VALUE="0"
     fi
 
     # ----------------------------------------------------
@@ -517,15 +525,23 @@ while IFS=',' read -r HOSTNAME IP PORT DBNAME DISPLAY_NAME MP; do
 
     if [[ $PEM_QUERY_EXIT_CODE -eq 0 && -n "$MOUNTPOINT_RESULT" ]]; then
         MOUNTPOINT_PERCENT_STRING=$(echo "$MOUNTPOINT_RESULT" | xargs)
-        MOUNTPOINT_RAW_PERCENT=$(echo "$MOUNTPOINT_PERCENT_STRING" | awk '{printf "%.0f", $1}')
+        # We use the raw float string for display to show exactly what is in DB
+        
+        # Logic: 
+        # > 80.0 -> Critical
+        # >= 70.0 -> Warning
+        # Else -> OK
+        
+        MOUNTPOINT_CLASS=$(awk -v usage="$MOUNTPOINT_PERCENT_STRING" -v warn="$MOUNTPOINT_WARN_THRESHOLD" -v crit="$MOUNTPOINT_CRIT_THRESHOLD" 'BEGIN {
+            if (usage > crit) print "critical";
+            else if (usage >= warn) print "warning";
+            else print "ok";
+        }')
+        
+        # Use integer for progress bar width (CSS)
+        MOUNTPOINT_BAR_WIDTH=$(echo "$MOUNTPOINT_PERCENT_STRING" | awk '{printf "%.0f", $1}')
 
-        if (( MOUNTPOINT_RAW_PERCENT >= MOUNTPOINT_ALERT_THRESHOLD )); then
-            MOUNTPOINT_CLASS="critical"
-        else
-            MOUNTPOINT_CLASS="ok"
-        fi
-
-        MOUNTPOINT_USAGE="<div class='value-cell'><span class='value-main'>${MOUNTPOINT_PERCENT_STRING}%</span><span class='value-sub'><code>${MP}</code></span></div><div class='progress-bar'><div class='progress-fill ${MOUNTPOINT_CLASS}' style='width:${MOUNTPOINT_RAW_PERCENT}%'></div></div>"
+        MOUNTPOINT_USAGE="<div class='value-cell'><span class='value-main'>${MOUNTPOINT_PERCENT_STRING}%</span><span class='value-sub'><code>${MP}</code></span></div><div class='progress-bar'><div class='progress-fill ${MOUNTPOINT_CLASS}' style='width:${MOUNTPOINT_BAR_WIDTH}%'></div></div>"
     else
         MOUNTPOINT_CLASS="na"
         MOUNTPOINT_USAGE="<span class='badge na'>N/A</span>"
@@ -540,7 +556,7 @@ while IFS=',' read -r HOSTNAME IP PORT DBNAME DISPLAY_NAME MP; do
         <td>$PORT</td>
         <td><span class='role-badge ${ROLE_CLASS}'>${MASTER_STATUS}</span></td>
         <td><div class='value-cell'><span class='badge ${REPL_CLASS}'>${ROLE_STATUS}</span><span class='value-sub'>${REPL_DETAIL}</span></div></td>
-        <td><span class='badge ${CONN_STATUS_CLASS}'>${CONN_PERCENT}</span></td>
+        <td><div class='value-cell'><span class='value-main'>${CONN_PERCENT_VALUE}% Usage</span><code>(${CONN_DISPLAY})</code></div><div class='progress-bar'><div class='progress-fill ${CONN_STATUS_CLASS}' style='width:${CONN_PERCENT_VALUE}%'></div></div></td>
         <td><span class='badge ${DEAD_TUPLES_CLASS}'>${DEAD_TUPLES}</span></td>
         <td><span class='badge ${XID_AGE_CLASS}'>${XID_AGE}</span></td>
         <td><span class='badge ${BLOCKING_CLASS}'>${BLOCKING_COUNT}</span></td>
