@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test HC Report - Hexi-Flexi Grid (30 instances)</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --transition-speed: 0.3s;
+    }
+
+    [data-theme="dark"] {
+      --bg-body: #0b0f19;
+      --bg-surface: #111827;
+      --bg-card: #1a2236;
+      --bg-card-alt: #151d2e;
+      --bg-hover: #1f2b42;
+      --text-primary: #e8edf5;
+      --text-secondary: #8896b0;
+      --text-muted: #5a6a85;
+      --border: rgba(136, 150, 176, 0.12);
+      --border-hover: rgba(136, 150, 176, 0.22);
+      --accent: #6366f1;
+      --accent-soft: rgba(99, 102, 241, 0.12);
+      --critical: #f43f5e;
+      --critical-bg: rgba(244, 63, 94, 0.1);
+      --critical-border: rgba(244, 63, 94, 0.2);
+      --warning: #f59e0b;
+      --warning-bg: rgba(245, 158, 11, 0.1);
+      --warning-border: rgba(245, 158, 11, 0.2);
+      --safe: #10b981;
+      --safe-bg: rgba(16, 185, 129, 0.1);
+      --safe-border: rgba(16, 185, 129, 0.2);
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+      --shadow-lg: 0 4px 20px rgba(0, 0, 0, 0.25);
+      --chart-grid: rgba(136, 150, 176, 0.06);
+      --toggle-bg: #1a2236;
+      --toggle-knob: #e8edf5;
+    }
+
+    [data-theme="light"] {
+      --bg-body: #f5f7fa;
+      --bg-surface: #ffffff;
+      --bg-card: #ffffff;
+      --bg-card-alt: #f8fafc;
+      --bg-hover: #f1f5f9;
+      --text-primary: #0f172a;
+      --text-secondary: #64748b;
+      --text-muted: #94a3b8;
+      --border: rgba(15, 23, 42, 0.08);
+      --border-hover: rgba(15, 23, 42, 0.15);
+      --accent: #6366f1;
+      --accent-soft: rgba(99, 102, 241, 0.08);
+      --critical: #e11d48;
+      --critical-bg: rgba(225, 29, 72, 0.06);
+      --critical-border: rgba(225, 29, 72, 0.15);
+      --warning: #d97706;
+      --warning-bg: rgba(217, 119, 6, 0.06);
+      --warning-border: rgba(217, 119, 6, 0.15);
+      --safe: #059669;
+      --safe-bg: rgba(5, 150, 105, 0.06);
+      --safe-border: rgba(5, 150, 105, 0.15);
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 4px 20px rgba(0, 0, 0, 0.06);
+      --chart-grid: rgba(15, 23, 42, 0.05);
+      --toggle-bg: #e2e8f0;
+      --toggle-knob: #0f172a;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg-body);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    .header {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+      padding: 24px 0;
+    }
+
+    .header-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header-left h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .header-left .meta {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .toggle-track {
+      width: 44px;
+      height: 24px;
+      border-radius: 12px;
+      background: var(--toggle-bg);
+      border: 1px solid var(--border);
+      position: relative;
+    }
+
+    .toggle-knob {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--toggle-knob);
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      transition: transform var(--transition-speed);
+    }
+
+    [data-theme="light"] .toggle-knob {
+      transform: translateX(20px);
+    }
+
+    .container {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 28px;
+    }
+
+    .summary-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .stat-card:hover {
+      box-shadow: var(--shadow-lg);
+      border-color: var(--border-hover);
+    }
+
+    .stat-card .stat-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+
+    .stat-card .stat-value {
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .stat-card.total .stat-value {
+      color: var(--accent);
+    }
+
+    .stat-card.critical .stat-value {
+      color: var(--critical);
+    }
+
+    .stat-card.warning .stat-value {
+      color: var(--warning);
+    }
+
+    .stat-card.safe .stat-value {
+      color: var(--safe);
+    }
+
+    .stat-card .stat-sub {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .group {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .group:hover {
+      border-color: var(--border-hover);
+    }
+
+    .group-head {
+      padding: 16px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+      gap: 16px;
+    }
+
+    .group-head:hover {
+      background: var(--bg-hover);
+    }
+
+    .group-head-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .group-host-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: var(--accent-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .group-host-name {
+      font-size: 0.92rem;
+      font-weight: 600;
+    }
+
+    .group-host-count {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .group-badges {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .badge.critical {
+      background: var(--critical-bg);
+      color: var(--critical);
+      border: 1px solid var(--critical-border);
+    }
+
+    .badge.critical .badge-dot {
+      background: var(--critical);
+    }
+
+    .badge.warning {
+      background: var(--warning-bg);
+      color: var(--warning);
+      border: 1px solid var(--warning-border);
+    }
+
+    .badge.warning .badge-dot {
+      background: var(--warning);
+    }
+
+    .badge.safe {
+      background: var(--safe-bg);
+      color: var(--safe);
+      border: 1px solid var(--safe-border);
+    }
+
+    .badge.safe .badge-dot {
+      background: var(--safe);
+    }
+
+    .group-chevron {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    .group-chevron svg {
+      width: 14px;
+      height: 14px;
+      fill: var(--text-muted);
+      transition: transform 0.25s ease;
+    }
+
+    .group.open .group-chevron svg {
+      transform: rotate(180deg);
+      fill: var(--accent);
+    }
+
+    .group-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .group.open .group-body {
+      max-height: 3000px;
+    }
+
+    .group-body-inner {
+      padding: 0 22px 22px;
+    }
+
+    .overview-row {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .chart-panel {
+      background: var(--bg-card-alt);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+    }
+
+    .chart-panel .panel-title,
+    .alerts-panel .panel-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
+
+    .chart-box {
+      height: 160px;
+    }
+
+    .alerts-panel {
+      background: var(--bg-card-alt);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+      overflow: auto;
+    }
+
+    .alert-list {
+      list-style: none;
+    }
+
+    .alert-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      margin-bottom: 6px;
+      font-size: 0.8rem;
+    }
+
+    .alert-item:hover {
+      background: var(--bg-hover);
+    }
+
+    .alert-item .alert-icon {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      margin-top: 1px;
+    }
+
+    .alert-item.critical-item .alert-icon {
+      background: var(--critical-bg);
+      color: var(--critical);
+      border: 1px solid var(--critical-border);
+    }
+
+    .alert-item.warning-item .alert-icon {
+      background: var(--warning-bg);
+      color: var(--warning);
+      border: 1px solid var(--warning-border);
+    }
+
+    .alert-item .alert-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .alert-item .alert-title {
+      font-weight: 600;
+      font-size: 0.8rem;
+    }
+
+    .alert-item .alert-detail {
+      color: var(--text-secondary);
+      font-size: 0.72rem;
+      margin-top: 1px;
+    }
+
+    .alert-item .alert-badge {
+      flex-shrink: 0;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-top: 2px;
+    }
+
+    .alert-item.critical-item .alert-badge {
+      background: var(--critical-bg);
+      color: var(--critical);
+      border: 1px solid var(--critical-border);
+    }
+
+    .alert-item.warning-item .alert-badge {
+      background: var(--warning-bg);
+      color: var(--warning);
+      border: 1px solid var(--warning-border);
+    }
+
+    .no-alerts {
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      font-style: italic;
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .tbl {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      font-size: 0.8rem;
+    }
+
+    .tbl thead th {
+      background: var(--bg-card-alt);
+      color: var(--text-muted);
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 10px 12px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    .tbl tbody td {
+      padding: 10px 12px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-card);
+      vertical-align: middle;
+    }
+
+    .tbl tbody tr:hover td {
+      background: var(--bg-hover);
+    }
+
+    .tbl tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .p {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 5px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .p-ok,
+    .p-safe {
+      background: var(--safe-bg);
+      color: var(--safe);
+      border: 1px solid var(--safe-border);
+    }
+
+    .p-warn {
+      background: var(--warning-bg);
+      color: var(--warning);
+      border: 1px solid var(--warning-border);
+    }
+
+    .p-alert {
+      background: var(--critical-bg);
+      color: var(--critical);
+      border: 1px solid var(--critical-border);
+    }
+
+    .p-na {
+      background: var(--bg-card-alt);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+
+    .p-sync {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+    }
+
+    .p-replica {
+      background: var(--safe-bg);
+      color: var(--safe);
+      border: 1px solid var(--safe-border);
+    }
+
+    .p-unsync {
+      background: var(--critical-bg);
+      color: var(--critical);
+      border: 1px solid var(--critical-border);
+    }
+
+    .footer {
+      text-align: center;
+      padding: 24px 28px;
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      border-top: 1px solid var(--border);
+      margin-top: 16px;
+    }
+
+    @media(max-width:1000px) {
+      .overview-row {
+        grid-template-columns: 1fr;
+      }
+
+      .summary-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media(max-width:600px) {
+      .summary-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Beehive - Hexi-Flexi Grid */
+    .beehive-overlay {
+      display: none;
+      margin-bottom: 28px;
+    }
+
+    .beehive-overlay.open {
+      display: block;
+      animation: bhIn .35s ease;
+    }
+
+    @keyframes bhIn {
+      from {
+        opacity: 0;
+        transform: translateY(-12px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .beehive-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .beehive-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .beehive-header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .beehive-header-left span {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .beehive-close {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      background: var(--bg-card-alt);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      transition: all .2s;
+    }
+
+    .beehive-close:hover {
+      background: var(--critical-bg);
+      color: var(--critical);
+      border-color: var(--critical-border);
+    }
+
+    .hex-flexi {
+      --s: 100px;
+      --g: 10px;
+      display: flex;
+      gap: var(--g);
+      flex-wrap: wrap;
+      padding-bottom: calc(var(--s)/(4*cos(30deg)));
+      margin: 0 auto;
+    }
+
+    .hf-cell {
+      width: var(--s);
+      aspect-ratio: cos(30deg);
+      border-radius: 50%/25%;
+      corner-shape: bevel;
+      margin-bottom: calc(var(--s)/(-4*cos(30deg)));
+      border: 8px solid;
+      box-sizing: border-box;
+      display: grid;
+      place-content: center;
+      cursor: pointer;
+      position: relative;
+      transition: transform .2s cubic-bezier(.4, 0, .2, 1);
+      z-index: 1;
+      overflow: visible;
+      font-size: .6rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-shadow: none;
+    }
+
+    .hf-cell:hover {
+      transform: scale(1.15);
+      z-index: 3;
+    }
+
+    .hf-cell.healthy {
+      background: var(--bg-card);
+      border-color: var(--safe);
+    }
+
+    .hf-cell.warning {
+      background: var(--bg-card);
+      border-color: var(--warning);
+    }
+
+    .hf-cell.critical {
+      background: var(--bg-card);
+      border-color: var(--critical);
+    }
+
+    .hex-tooltip {
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, .95);
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: .66rem;
+      font-weight: 500;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .2s;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+      line-height: 1.5;
+      text-shadow: none;
+    }
+
+    .hex-tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: rgba(15, 23, 42, .95);
+    }
+
+    .hf-cell:hover .hex-tooltip {
+      opacity: 1;
+    }
+
+    .hex-tooltip .tt-name {
+      font-weight: 700;
+      font-size: .72rem;
+      margin-bottom: 2px;
+    }
+
+    .hex-tooltip .tt-host {
+      opacity: .55;
+      font-size: .6rem;
+      margin-bottom: 4px;
+    }
+
+    .hex-tooltip .tt-alert {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 1px 0;
+    }
+
+    .hex-tooltip .tt-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .hex-tooltip .tt-dot.c {
+      background: #fb7185;
+    }
+
+    .hex-tooltip .tt-dot.w {
+      background: #fbbf24;
+    }
+
+    .hex-tooltip .tt-dot.h {
+      background: #10b981;
+    }
+
+    .beehive-legend {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .beehive-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .7rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .beehive-legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+    }
+
+    .beehive-legend-dot.l-critical {
+      background: linear-gradient(135deg, #fb7185, #e11d48);
+    }
+
+    .beehive-legend-dot.l-warning {
+      background: linear-gradient(135deg, #fbbf24, #d97706);
+    }
+
+    .beehive-legend-dot.l-healthy {
+      background: linear-gradient(135deg, #10b981, #059669);
+    }
+
+    .beehive-count {
+      font-size: .82rem;
+      font-weight: 800;
+      margin-left: auto;
+    }
+
+    .beehive-count .bc-alert {
+      color: var(--critical);
+    }
+
+    .beehive-count .bc-sep {
+      color: var(--text-muted);
+      margin: 0 1px;
+    }
+
+    .beehive-count .bc-total {
+      color: var(--text-secondary);
+    }
+
+    .stat-card.total {
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card.total::after {
+      content: 'Click to explore';
+      position: absolute;
+      bottom: 8px;
+      right: 12px;
+      font-size: .6rem;
+      color: var(--text-muted);
+      opacity: 0;
+      transition: opacity .2s;
+    }
+
+    .stat-card.total:hover::after {
+      opacity: 1;
+    }
+
+    .stat-card.total:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent), var(--shadow-lg);
+    }
+
+    .stat-card.critical {
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card.critical::after {
+      content: 'Click for chart';
+      position: absolute;
+      bottom: 8px;
+      right: 12px;
+      font-size: .6rem;
+      color: var(--text-muted);
+      opacity: 0;
+      transition: opacity .2s;
+    }
+
+    .stat-card.critical:hover::after {
+      opacity: 1;
+    }
+
+    .stat-card.critical:hover {
+      border-color: var(--critical);
+      box-shadow: 0 0 0 1px var(--critical), var(--shadow-lg);
+    }
+
+    .summary-chart-overlay {
+      display: none;
+      margin-bottom: 28px;
+    }
+
+    .summary-chart-overlay.open {
+      display: block;
+      animation: bhIn .35s ease;
+    }
+
+    .summary-chart-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .summary-chart-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .summary-chart-header span {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .summary-chart-box {
+      height: 260px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .groups-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      margin-bottom: 12px;
+    }
+
+    .btn-expand {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      font-size: .72rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      transition: all .2s;
+    }
+
+    .btn-expand:hover {
+      background: var(--bg-hover);
+      border-color: var(--border-hover);
+      color: var(--text-primary);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <div class="header-inner">
+      <div class="header-left">
+        <h1>[Test] PostgreSQL Healthcheck Report</h1>
+        <div class="meta">Test &middot; 30 Instances &middot; Hexi-Flexi Grid</div>
+      </div>
+      <div class="theme-toggle" onclick="toggleTheme()"><span>🌙</span>
+        <div class="toggle-track">
+          <div class="toggle-knob"></div>
+        </div><span>☀️</span>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="summary-row" id="summaryRow"></div>
+    <div class="beehive-overlay" id="beehiveOverlay">
+      <div id="beehiveContainer"></div>
+    </div>
+    <div class="summary-chart-overlay" id="summaryChartOverlay">
+      <div class="summary-chart-card">
+        <div class="summary-chart-header"><span>Alert Overview</span>
+          <div class="beehive-close" onclick="toggleSummaryChart()">&times;</div>
+        </div>
+        <div class="summary-chart-box"><canvas id="summaryChartCanvas"></canvas></div>
+      </div>
+    </div>
+    <div class="groups-toolbar"><button class="btn-expand" id="btnExpandAll" onclick="toggleAllGroups()">&#9660; Expand
+        All</button></div>
+    <div id="groups"></div>
+  </div>
+  <div class="footer">Test Report — 30 Instances — Hexi-Flexi Grid</div>
+  <script>
+    // 30 test instances across 8 hosts with a mix of critical/warning/healthy
+    function h(s) { return { "html": "<span class='p p-safe'>" + s + "</span>", "status": "ok" }; }
+    function w(s) { return { "html": s, "status": "warn" }; }
+    function c(s) { return { "html": s, "status": "alert" }; }
+    const instances = [
+      { "name": "PPRAFM", "hostname": "dbprod01.corp.co.id", "port": "5432", "masterStatus": "Master", "replication": h("SYNC"), "connection": w("11428/13000 (88%)"), "deadTuples": c("4.2M"), "xidAge": h("200M"), "blocking": h("0"), "mountpoint": c("/data (76%)") },
+      { "name": "PPRAFM_R", "hostname": "dbprod01.corp.co.id", "port": "5433", "masterStatus": "Slave", "replication": h("SYNC"), "connection": h("200/13000 (1.5%)"), "deadTuples": h("1200"), "xidAge": h("198M"), "blocking": h("0"), "mountpoint": h("/data (35%)") },
+      { "name": "BILLING", "hostname": "dbprod01.corp.co.id", "port": "5434", "masterStatus": "Master", "replication": h("SYNC"), "connection": h("500/5000 (10%)"), "deadTuples": h("800"), "xidAge": h("150M"), "blocking": h("0"), "mountpoint": h("/data (40%)") },
+      { "name": "CRM_MAIN", "hostname": "dbprod02.corp.co.id", "port": "5432", "masterStatus": "Master", "replication": h("SYNC"), "connection": w("4200/5000 (84%)"), "deadTuples": w("890K"), "xidAge": h("300M"), "blocking": w("5"), "mountpoint": h("/data (55%)") },
+      { "name": "CRM_RPT", "hostname": "dbprod02.corp.co.id", "port": "5433", "masterStatus": "Slave", "replication": h("SYNC"), "connection": h("100/5000 (2%)"), "deadTuples": h("500"), "xidAge": h("295M"), "blocking": h("0"), "mountpoint": h("/data (42%)") },
+      { "name": "INVENTORY", "hostname": "dbprod02.corp.co.id", "port": "5434", "masterStatus": "Master", "replication": h("SYNC"), "connection": h("350/3000 (12%)"), "deadTuples": h("2300"), "xidAge": h("180M"), "blocking": h("0"), "mountpoint": h("/data (38%)") },
+      { "name": "INVENTORY_R", "hostname": "dbprod02.corp.co.id", "port": "5435", "masterStatus": "Slave", "replication": h("SYNC"), "connection": h("50/3000 (2%)"), "deadTuples": h("100"), "xidAge": h("178M"), "blocking": h("0"), "mountpoint": h("/data (35%)") },
+      { "name": "AUTH_SVC", "hostname": "dbprod03.corp.co.id", "port": "5432", "masterStatus": "Master", "replication": h("SYNC"), "connection": h("800/5000 (16%)"), "deadTuples": h("5000"), "xidAge": h("90M"), "blocking": h("0"), "mountpoint": h("/data (28%)") },
+      { "name": "AUTH_RPL", "hostname": "dbprod03.corp.co.id", "port": "5433", "masterStatus": "Slave", "replication": h("SYNC"), "connection": h("50/5000 (1%)"), "deadTuples": h("200"), "xidAge": h("88M"), "blocking": h("0"), "mountpoint": h("/data (25%)") },
+      { "name": "PAYMENT", "hostname": "dbprod03.corp.co.id", "port": "5434", "masterStatus": "Master", "replication": h("SYNC"), "connection": h("600/5000 (12%)"), "deadTuples": h("3800"), "xidAge": h("120M"), "blocking": h("0"), "mountpoint": h("/data (30%)") },
+      { "name": "NOTIF_SVC", "hostname": "dbprod04.corp.co.id", "port": "5432", "masterStatus": "Master", "replication": h("SYNC"), "connection": h("300/3000 (10%)"), "deadTuples": h("1500"), "xidAge": h("75M"), "blocking": h("0"), "mountpoint": h("/data (22%)") },
+      { "name": "NOTIF_RPL", "hostname": "dbprod04.corp.co.id", "port": "5433", "masterStatus": "Slave", "replication": h("SYNC"), "connection": h("20/3000 (<1%)"), "deadTuples": h("50"), "xidAge": h("73M"), "blocking": h("0"), "mountpoint": h("/data (20%)") },
+      { "name": "LOGGING", "hostname": "dbprod04.corp.co.id", "port": "5434", "masterStatus": "Master", "replication": h("SYNC"), "connection": w("2800/3000 (93%)"), "deadTuples": c("12.5M"), "xidAge": w("1.8B"), "blocking": h("0"), "mountpoint": c("/data (89%)") },
+      { "name": "ANALYTICS", "hostname": "dbprod05.corp.co.id", "port": "5432", "masterStatus": "Master", "replication": h("SYNC"), "connection": h("400/5000 (8%)"), "deadTuples": h("4500"), "xidAge": h("200M"), "blocking": h("0"), "mountpoint": h("/data (45%)") },
+      { "name": "ANALYTICS_R", "hostname": "dbprod05.corp.co.id", "port": "5433", "masterStatus": "Slave", "replication": h("SYNC"), "connection": h("80/5000 (1.6%)"), "deadTuples": h("300"), "xidAge": h("198M"), "blocking": h("0"), "mountpoint": h("/data (40%)") },
+      { "name": "REPORTING", "hostname": "dbprod05.corp.co.id", "port": "5434", "masterStatus": "Master", "replication": h("SYNC"), "connection": h("250/3000 (8%)"), "deadTuples": h("1800"), "xidAge": h("160M"), "blocking": h("0"), "mountpoint": h("/data (35%)") },
+      { "name": "REPORT_R", "hostname": "dbprod05.corp.co.id", "port": "5435", "masterStatus": "Slave", "replication": h("SYNC"), "connection": h("30/3000 (1%)"), "deadTuples": h("100"), "xidAge": h("158M"), "blocking": h("0"), "mountpoint": h("/data (32%)") },
+      { "name": "ORDER_SVC", "hostname": "dbprod06.corp.co.id", "port": "5432", "masterStatus": "Master", "replication": c("UNSYNC"), "connection": c("4900/5000 (98%)"), "deadTuples": c("8.8M"), "xidAge": c("2.0B"), "blocking": c("22"), "mountpoint": c("/data (92%)") },
+      { "name": "ORDER_RPL", "hostname": "dbprod06.corp.co.id", "port": "5433", "masterStatus": "Slave", "replication": h("SYNC"), "connection": h("100/5000 (2%)"), "deadTuples": h("500"), "xidAge": h("180M"), "blocking": h("0"), "mountpoint": h("/data (30%)") },
+      { "name": "CATALOG", "hostname": "dbprod06.corp.co.id", "port": "5434", "masterStatus": "Master", "replication": h("SYNC"), "connection": h("700/5000 (14%)"), "deadTuples": h("6000"), "xidAge": h("110M"), "blocking": h("0"), "mountpoint": h("/data (33%)") },
+      { "name": "SEARCH", "hostname": "dbprod07.corp.co.id", "port": "5432", "masterStatus": "Master", "replication": h("SYNC"), "connection": h("450/5000 (9%)"), "deadTuples": h("3200"), "xidAge": h("95M"), "blocking": h("0"), "mountpoint": h("/data (27%)") },
+      { "name": "SEARCH_R", "hostname": "dbprod07.corp.co.id", "port": "5433", "masterStatus": "Slave", "replication": h("SYNC"), "connection": h("60/5000 (1.2%)"), "deadTuples": h("100"), "xidAge": h("93M"), "blocking": h("0"), "mountpoint": h("/data (24%)") },
+      { "name": "CACHE_DB", "hostname": "dbprod07.corp.co.id", "port": "5434", "masterStatus": "Master", "replication": h("SYNC"), "connection": w("3600/5000 (72%)"), "deadTuples": h("900"), "xidAge": h("50M"), "blocking": w("3"), "mountpoint": h("/data (29%)") },
+      { "name": "SESSION", "hostname": "dbprod07.corp.co.id", "port": "5435", "masterStatus": "Master", "replication": h("SYNC"), "connection": h("500/3000 (17%)"), "deadTuples": h("1500"), "xidAge": h("60M"), "blocking": h("0"), "mountpoint": h("/data (25%)") },
+      { "name": "MEDIA_SVC", "hostname": "dbprod08.corp.co.id", "port": "5432", "masterStatus": "Master", "replication": h("SYNC"), "connection": h("200/3000 (7%)"), "deadTuples": h("800"), "xidAge": h("70M"), "blocking": h("0"), "mountpoint": h("/data (20%)") },
+      { "name": "MEDIA_RPL", "hostname": "dbprod08.corp.co.id", "port": "5433", "masterStatus": "Slave", "replication": h("SYNC"), "connection": h("30/3000 (1%)"), "deadTuples": h("50"), "xidAge": h("68M"), "blocking": h("0"), "mountpoint": h("/data (18%)") },
+      { "name": "CONFIG_DB", "hostname": "dbprod08.corp.co.id", "port": "5434", "masterStatus": "Master", "replication": h("SYNC"), "connection": h("100/1000 (10%)"), "deadTuples": h("300"), "xidAge": h("40M"), "blocking": h("0"), "mountpoint": h("/data (15%)") },
+      { "name": "AUDIT_LOG", "hostname": "dbprod08.corp.co.id", "port": "5435", "masterStatus": "Master", "replication": h("SYNC"), "connection": w("950/1000 (95%)"), "deadTuples": w("2.1M"), "xidAge": h("85M"), "blocking": h("0"), "mountpoint": w("/data (78%)") },
+      { "name": "SCHEDULER", "hostname": "dbprod08.corp.co.id", "port": "5436", "masterStatus": "Master", "replication": h("SYNC"), "connection": h("50/1000 (5%)"), "deadTuples": h("100"), "xidAge": h("30M"), "blocking": h("0"), "mountpoint": h("/data (12%)") },
+      { "name": "METRICS", "hostname": "dbprod08.corp.co.id", "port": "5437", "masterStatus": "Master", "replication": h("SYNC"), "connection": h("150/1000 (15%)"), "deadTuples": h("2500"), "xidAge": h("55M"), "blocking": h("0"), "mountpoint": h("/data (20%)") }
+    ];
+    const resolvedAlerts = [];
+    const metricLabels = { replication: 'Replication', connection: 'Connection Usage', deadTuples: 'Dead Tuples', xidAge: 'XID Age', blocking: 'Blocking Queries', mountpoint: 'Mountpoint Usage' };
+    function isSi(i) { return i.name.includes('(Si)'); }
+    function getOverall(i) { const si = isSi(i); const m = [si ? 'ok' : i.replication.status, i.connection.status, i.deadTuples.status, i.xidAge.status, i.blocking.status, i.mountpoint.status]; if (m.includes('alert')) return 'critical'; if (m.includes('warn')) return 'warning'; return 'healthy'; }
+    function pillClass(s) { return { ok: 'p-ok', safe: 'p-safe', healthy: 'p-safe', warn: 'p-warn', alert: 'p-alert', na: 'p-na' }[s] || 'p-na'; }
+    function stripHtml(h) { const t = document.createElement('div'); t.innerHTML = h; return t.textContent || ''; }
+    function getAlerts(insts) { const a = [];['replication', 'connection', 'deadTuples', 'xidAge', 'blocking', 'mountpoint'].forEach(m => { insts.forEach(i => { if (m === 'replication' && isSi(i)) return; if (i[m].status === 'alert') a.push({ type: 'critical', instance: i.name, metric: metricLabels[m], value: stripHtml(i[m].html) }); else if (i[m].status === 'warn') a.push({ type: 'warning', instance: i.name, metric: metricLabels[m], value: stripHtml(i[m].html) }); }); }); return a; }
+    function getResolvedForHost(hostname) { return resolvedAlerts.filter(a => a.hostname === hostname); }
+    const groups = {}; instances.forEach(i => { if (!groups[i.hostname]) groups[i.hostname] = []; groups[i.hostname].push(i); });
+    const allAlerts = getAlerts(instances); const tC = allAlerts.filter(a => a.type === 'critical').length, tW = allAlerts.filter(a => a.type === 'warning').length, tS = instances.filter(i => getOverall(i) === 'healthy').length;
+    document.getElementById('summaryRow').innerHTML = `
+      <div class="stat-card total" onclick="toggleBeehive()"><div class="stat-label">Total Instances</div><div class="stat-value">${instances.length}</div><div class="stat-sub">${Object.keys(groups).length} hosts</div></div>
+      <div class="stat-card critical" onclick="toggleSummaryChart()"><div class="stat-label">Critical</div><div class="stat-value">${tC}</div><div class="stat-sub">Requires attention</div></div>
+      <div class="stat-card warning"><div class="stat-label">Warning</div><div class="stat-value">${tW}</div><div class="stat-sub">Monitor closely</div></div>
+      <div class="stat-card safe"><div class="stat-label">Healthy</div><div class="stat-value">${tS}</div><div class="stat-sub">Operating normally</div></div>`;
+    const gc = document.getElementById('groups');
+    function getThemeColors() { const cs = getComputedStyle(document.documentElement); return { critical: cs.getPropertyValue('--critical').trim(), warning: cs.getPropertyValue('--warning').trim(), safe: cs.getPropertyValue('--safe').trim(), grid: cs.getPropertyValue('--chart-grid').trim(), muted: cs.getPropertyValue('--text-muted').trim(), secondary: cs.getPropertyValue('--text-secondary').trim() }; }
+    const chartRefs = [];
+    Object.keys(groups).forEach((host, idx) => {
+      const insts = groups[host]; const alerts = getAlerts(insts); const resolved = getResolvedForHost(host); const gId = `g${idx}`, cId = `c${idx}`;
+      const gC = alerts.filter(a => a.type === 'critical').length, gW = alerts.filter(a => a.type === 'warning').length, gS = insts.filter(i => getOverall(i) === 'healthy').length;
+      let alertsHtml = '';
+      if (alerts.length === 0 && resolved.length === 0) { alertsHtml = '<div class="no-alerts">No alerts — all metrics are healthy</div>'; }
+      else { alertsHtml = '<ul class="alert-list">' + alerts.map(a => { const cls = a.type === 'critical' ? 'critical-item' : 'warning-item'; const icon = a.type === 'critical' ? '!' : '⚠'; const label = a.type === 'critical' ? 'Critical' : 'Warning'; return `<li class="alert-item ${cls}"><div class="alert-icon">${icon}</div><div class="alert-body"><div class="alert-title">${a.instance}</div><div class="alert-detail">${a.metric}: ${a.value}</div></div><div class="alert-badge">${label}</div></li>`; }).join('') + '</ul>'; }
+      let rows = ''; insts.forEach(i => { rows += `<tr><td style="font-weight:600;text-align:left">${i.name}</td><td>${i.port}</td><td>${i.masterStatus}</td><td>${i.replication.html}</td><td><span class="p ${pillClass(i.connection.status)}">${i.connection.html}</span></td><td><span class="p ${pillClass(i.deadTuples.status)}">${i.deadTuples.html}</span></td><td><span class="p ${pillClass(i.xidAge.status)}">${i.xidAge.html}</span></td><td><span class="p ${pillClass(i.blocking.status)}">${i.blocking.html}</span></td><td><span class="p ${pillClass(i.mountpoint.status)}">${i.mountpoint.html}</span></td></tr>`; });
+      gc.insertAdjacentHTML('beforeend', `<div class="group" id="${gId}"><div class="group-head" onclick="toggle('${gId}')"><div class="group-head-left"><div class="group-host-icon">⬡</div><div><div class="group-host-name">${host}</div><div class="group-host-count">${insts.length} instance${insts.length > 1 ? 's' : ''}</div></div></div><div class="group-badges">${gC > 0 ? `<div class="badge critical"><span class="badge-dot"></span>${gC} Critical</div>` : ''}${gW > 0 ? `<div class="badge warning"><span class="badge-dot"></span>${gW} Warning</div>` : ''}${gS > 0 ? `<div class="badge safe"><span class="badge-dot"></span>${gS} Healthy</div>` : ''}</div><div class="group-chevron"><svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></div></div><div class="group-body"><div class="group-body-inner"><div class="overview-row"><div class="chart-panel"><div class="panel-title">Alert Status</div><div class="chart-box"><canvas id="${cId}"></canvas></div></div><div class="alerts-panel"><div class="panel-title">Alert Details (${alerts.length})</div>${alertsHtml}</div></div><table class="tbl"><thead><tr><th style="text-align:left">Name</th><th>Port</th><th>Role</th><th>Replication</th><th>Connection</th><th>Dead Tuples</th><th>XID Age</th><th>Blocking</th><th>Mountpoint</th></tr></thead><tbody>${rows}</tbody></table></div></div></div>`);
+      const tc = getThemeColors(); const ctx = document.getElementById(cId).getContext('2d');
+      const chart = new Chart(ctx, { type: 'bar', data: { labels: ['Critical', 'Warning', 'Healthy'], datasets: [{ data: [gC, gW, gS], backgroundColor: [tc.critical, tc.warning, tc.safe], borderWidth: 0, borderRadius: 4, barPercentage: 0.55, categoryPercentage: 0.65 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(0,0,0,0.8)', cornerRadius: 6, padding: 8, callbacks: { label: function (c) { return c.dataIndex < 2 ? c.raw + ' alert' + (c.raw !== 1 ? 's' : '') : c.raw + ' instance' + (c.raw !== 1 ? 's' : ''); } } } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, color: tc.muted, font: { family: 'Inter', size: 10 } }, grid: { color: tc.grid } }, x: { ticks: { color: tc.secondary, font: { family: 'Inter', size: 11, weight: '500' } }, grid: { display: false } } } } });
+      chartRefs.push(chart);
+    });
+    function toggle(id) { document.getElementById(id).classList.toggle('open'); }
+    function toggleAllGroups() { var gs = document.querySelectorAll('.group'); var btn = document.getElementById('btnExpandAll'); var anyOpen = document.querySelector('.group.open'); if (anyOpen) { gs.forEach(function (g) { g.classList.remove('open'); }); btn.innerHTML = '&#9660; Expand All'; } else { gs.forEach(function (g) { g.classList.add('open'); }); btn.innerHTML = '&#9650; Collapse All'; } }
+    function toggleTheme() { const h = document.documentElement; const n = h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; h.setAttribute('data-theme', n); localStorage.setItem('hc-theme', n); updateChartColors(); }
+    const saved = localStorage.getItem('hc-theme'); if (saved) document.documentElement.setAttribute('data-theme', saved);
+    function updateChartColors() { const tc = getThemeColors(); chartRefs.forEach(c => { c.options.scales.y.ticks.color = tc.muted; c.options.scales.y.grid.color = tc.grid; c.options.scales.x.ticks.color = tc.secondary; c.data.datasets[0].backgroundColor = [tc.critical, tc.warning, tc.safe]; c.update('none'); }); }
+    function toggleBeehive() { const o = document.getElementById('beehiveOverlay'); o.classList.toggle('open'); if (o.classList.contains('open') && !o.dataset.rendered) { renderBeehive(); o.dataset.rendered = '1'; } }
+    function renderBeehive() {
+      var container = document.getElementById('beehiveContainer');
+      var allInsts = []; var hostKeys = Object.keys(groups);
+      var clusterColors = ['#6366f1', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316', '#06b6d4', '#84cc16', '#a855f7', '#0ea5e9', '#d946ef', '#f43f5e', '#22d3ee'];
+      hostKeys.forEach(function (host) { groups[host].forEach(function (inst) { allInsts.push({ inst: inst, host: host }); }); });
+      var HW = 100, GAP = 10;
+      var card = document.createElement('div'); card.className = 'beehive-card';
+      card.innerHTML = '<div class="beehive-header"><div class="beehive-header-left"><span>Hosts</span></div><div class="beehive-close" onclick="toggleBeehive()">&times;</div></div>';
+      var grid = document.createElement('div'); grid.className = 'hex-flexi';
+      var cCnt = 0, wCnt = 0, hCnt = 0;
+      function getInstAlerts(inst) {
+        var alerts = []; var si = isSi(inst);
+        var checks = [['replication', 'Replication'], ['connection', 'Connection'], ['deadTuples', 'Dead Tuples'], ['xidAge', 'XID Age'], ['blocking', 'Blocking'], ['mountpoint', 'Mountpoint']];
+        checks.forEach(function (c) { var m = c[0], label = c[1]; if (m === 'replication' && si) return; if (inst[m].status === 'alert') alerts.push({ type: 'c', label: label, val: stripHtml(inst[m].html) }); else if (inst[m].status === 'warn') alerts.push({ type: 'w', label: label, val: stripHtml(inst[m].html) }); });
+        return alerts;
+      }
+      allInsts.forEach(function (item, i) {
+        var inst = item.inst, host = item.host;
+        var status = getOverall(inst);
+        if (status === 'critical') cCnt++; else if (status === 'warning') wCnt++; else hCnt++;
+        var cell = document.createElement('div'); cell.className = 'hf-cell ' + status;
+        var alerts = getInstAlerts(inst);
+        var ttAlerts = '';
+        if (alerts.length > 0) { alerts.forEach(function (a) { ttAlerts += '<div class="tt-alert"><span class="tt-dot ' + a.type + '"></span>' + a.label + ': ' + a.val + '</div>'; }); }
+        else { ttAlerts = '<div class="tt-alert"><span class="tt-dot h"></span>All metrics healthy</div>'; }
+        cell.innerHTML = '<div class="hex-tooltip"><div class="tt-name">' + inst.name + '</div><div class="tt-host">' + host + '</div>' + ttAlerts + '</div>';
+        cell.addEventListener('click', function () { var gIdx = hostKeys.indexOf(host); var gId = 'g' + gIdx; var el = document.getElementById(gId); if (el) { el.classList.add('open'); el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } });
+        grid.appendChild(cell);
+      });
+      card.appendChild(grid);
+      container.appendChild(card);
+      requestAnimationFrame(function () {
+        var cells = grid.querySelectorAll('.hf-cell');
+        var gw = grid.offsetWidth;
+        var colsPerRow = Math.floor((gw + GAP) / (HW + GAP));
+        if (colsPerRow < 2) colsPerRow = 2;
+        var idx = 0, row = 0;
+        while (idx < cells.length) {
+          var isOdd = row % 2 === 1;
+          var rowCols = isOdd ? colsPerRow - 1 : colsPerRow;
+          if (rowCols < 1) rowCols = 1;
+          if (isOdd && idx < cells.length) { cells[idx].style.marginLeft = (HW + GAP) / 2 + 'px'; }
+          idx += rowCols; row++;
+        }
+      });
+      var alertTotal = cCnt + wCnt;
+      var legend = '<div class="beehive-legend">';
+      legend += '<div class="beehive-legend-item"><div class="beehive-legend-dot l-critical"></div>Critical ' + cCnt + '</div>';
+      legend += '<div class="beehive-legend-item"><div class="beehive-legend-dot l-warning"></div>Warning ' + wCnt + '</div>';
+      legend += '<div class="beehive-legend-item"><div class="beehive-legend-dot l-healthy"></div>Healthy ' + hCnt + '</div>';
+      legend += '<div class="beehive-count"><span class="bc-alert">' + alertTotal + '</span><span class="bc-sep">/</span><span class="bc-total">' + allInsts.length + '</span></div>';
+      legend += '</div>';
+      card.insertAdjacentHTML('beforeend', legend);
+    }
+    var summaryChartRef = null;
+    function toggleSummaryChart() {
+      var o = document.getElementById('summaryChartOverlay'); o.classList.toggle('open');
+      if (o.classList.contains('open') && !summaryChartRef) {
+        var tc = getThemeColors(); var ctx = document.getElementById('summaryChartCanvas').getContext('2d');
+        summaryChartRef = new Chart(ctx, { type: 'bar', data: { labels: ['Critical', 'Warning', 'Healthy'], datasets: [{ label: 'Instances', data: [tC, tW, tS], backgroundColor: [tc.critical, tc.warning, tc.safe], borderWidth: 0, borderRadius: 6, barPercentage: 0.5, categoryPercentage: 0.6 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(0,0,0,0.85)', cornerRadius: 8, padding: 10, callbacks: { label: function (c) { return c.dataIndex < 2 ? c.raw + ' alert' + (c.raw !== 1 ? 's' : '') : c.raw + ' instance' + (c.raw !== 1 ? 's' : ''); } } } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, color: tc.muted, font: { family: 'Inter', size: 11 } }, grid: { color: tc.grid } }, x: { ticks: { color: tc.secondary, font: { family: 'Inter', size: 12, weight: '600' } }, grid: { display: false } } } } });
+      }
+    }
+  </script>
+</body>
+
+</html>
